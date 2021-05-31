@@ -9,9 +9,9 @@ WORKSPACE_ID = int(os.environ['context.workspaceId'])
 PROJECT_ID = int(os.environ['modal.state.slyProjectId'])
 
 
-SELECTED_TAGS = os.environ['state.tags']
-KEEP_ANNS = bool(strtobool(os.environ['state.keepTags']))
-INPUT_PROJECT_NAME = str(os.environ['state.inputProjectName'])
+SELECTED_TAGS = os.environ['modal.state.tags']
+KEEP_ANNS = bool(strtobool(os.environ['modal.state.keepTags']))
+INPUT_PROJECT_NAME = str(os.environ['modal.state.inputProjectName'])
 
 api = sly.Api.from_env()
 

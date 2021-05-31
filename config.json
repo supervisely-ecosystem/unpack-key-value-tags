@@ -1,10 +1,10 @@
 {
-  "name": "Unpack key values tags",
+  "name": "Unpack key value tags",
   "type": "app",
   "categories": [
     "Labeling"
   ],
-  "description": "Rename \\\"KeyValue\\\" tags to None value tags (fruit: lemon -> fruit_lemon,...)",
+  "description": "Rename \\\"Key:Value\\\" tags to key_value (fruit: lemon -> fruit_lemon)",
   "docker_image": "supervisely/base-py-sdk:6.1.80",
   "main_script": "src/main.py",
   "modal_template": "src/modal.html",

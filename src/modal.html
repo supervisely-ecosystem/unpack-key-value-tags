@@ -1,7 +1,7 @@
 <div>
 
     <sly-field title="Select Tags" description="Select tags that you want to unpack">
-        <sly-select-tag :project-id="state.projectId" :tags.sync="state.tags" :options="{'multiple': true}"></sly-select-tag>
+        <sly-select-tag :project-id="state.slyProjectId" :tags.sync="state.tags" :options="{'multiple': true}"></sly-select-tag>
     </sly-field>
     <sly-field title="Keep tags"
                description="Choose whether to keep tags from source project or not">
