@@ -1,6 +1,6 @@
 <div>
     <sly-field title="Select Tags" description="Select tags that you want to unpack">
-        <sly-select-tag :project-id="state.slyProjectId" :tags.sync="state.tags" :options="{'multiple': true}"></sly-select-tag>
+        <sly-select-tag :project-id="context.slyProjectId" :tags.sync="state.tags" :options="{'multiple': true}"></sly-select-tag>
     </sly-field>
     {{state.slyProjectId}}
     <br/>
