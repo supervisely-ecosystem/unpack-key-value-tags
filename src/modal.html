@@ -1,0 +1,14 @@
+<div>
+
+    <sly-field title="Select Tags" description="Select tags that you want to unpack">
+        <sly-select-tag :project-id="state.projectId" :tags.sync="state.tags" :options="{'multiple': true}"></sly-select-tag>
+    </sly-field>
+    <sly-field title="Keep tags"
+               description="Choose whether to keep tags from source project or not">
+        <el-checkbox v-model="state.keepTags">keep tags</el-checkbox>
+    </sly-field>
+    <sly-field title="Input project name"
+               description="New project with this name will be created">
+        <el-input v-model="state.inputProjectName"></el-input>
+    </sly-field>
+</div>
