@@ -1,13 +1,28 @@
 <div>
-    <sly-field title="Select Tags" description="Select tags that you want to unpack">
-        <sly-select-tag :project-id="context.projectId" :tags.sync="state.tags" :options="{'multiple': true}"></sly-select-tag>
+    <sly-field title="Select Tags that should be unpacked">
+        <sly-select-tag :project-id="context.projectId" :tags.sync="state.tags"
+                        :options="{'multiple': true}"></sly-select-tag>
     </sly-field>
-    <sly-field title="Keep tags"
+    <sly-field title="Keep original tags / remove original tags"
                description="Choose whether to keep tags from source project or not">
-        <el-checkbox v-model="state.keepTags">keep tags</el-checkbox>
+        <el-select v-model="state.assignAs">
+            <el-option key="keep" label="Keep original tags" value="keep"></el-option>
+            <el-option key="remove" label="Remove original tags" value="remove"></el-option>
+        </el-select>
     </sly-field>
-    <sly-field title="Input project name"
+    <sly-field title="Result project name"
                description="New project with this name will be created">
         <el-input v-model="state.inputProjectName"></el-input>
     </sly-field>
 </div>
+
+
+<el-select v-model="state.selectors[row.name]"
+           :disabled="data.started === true || row.convertTo.length === 1">
+    <el-option
+            v-for="item in row.convertTo"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+    </el-option>
+</el-select>

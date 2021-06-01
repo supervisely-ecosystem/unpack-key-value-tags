@@ -10,13 +10,13 @@
   "modal_template": "src/modal.html",
   "modal_template_state": {
     "tags": [],
-    "keepTags": false,
+    "keepTags": "keep",
     "inputProjectName": ""
   },
   "task_location": "workspace_tasks",
   "isolate": true,
   "headless": true,
-  "icon": "https://i.imgur.com/Ntpqy9x.png",
+  "icon": "https://i.imgur.com/0lNSt9M.png",
   "icon_background": "#FFFFFF",
   "context_menu": {
     "target": ["images_project"],

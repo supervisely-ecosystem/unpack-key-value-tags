@@ -10,15 +10,35 @@ PROJECT_ID = int(os.environ['modal.state.slyProjectId'])
 
 
 SELECTED_TAGS = os.environ['modal.state.tags']
-KEEP_ANNS = bool(strtobool(os.environ['modal.state.keepTags']))
+KEEP_TAGS = os.environ['modal.state.keepTags']
 INPUT_PROJECT_NAME = str(os.environ['modal.state.inputProjectName'])
 
 api = sly.Api.from_env()
 
 
-@my_app.callback("unpack_tags")
+def unpack_tags(api, project_tags, tags_to_unpack, dst_project_id):
+    unpacked_project_tags = []
+    unpacked_project_tag_metas = []
+    dst_project_meta = sly.ProjectMeta.from_json(api.project.get_meta(dst_project_id))
+    for tag in project_tags:
+        if tag.name in tags_to_unpack:
+            tag_name = f"{tag.name}_{tag.value}"
+            if dst_project_meta.tag_metas.get(tag_name) is None:
+                tag_meta = sly.TagMeta(tag_name, sly.TagValueType.NONE)
+                tag = sly.Tag(tag_meta)
+                dst_project_meta = dst_project_meta.add_tag_meta(tag_meta)
+                api.project.update_meta(dst_project_id, dst_project_meta.to_json())
+            else:
+                tag_meta = dst_project_meta.tag_metas.get(tag_name)
+                tag = sly.Tag(tag_meta)
+            unpacked_project_tags.append(tag)
+            unpacked_project_tag_metas.append(tag_meta)
+    return unpacked_project_tags
+
+
+@my_app.callback("unpack_key_value_tags")
 @sly.timeit
-def unpack_tags(api: sly.Api, task_id, context, state, app_logger):
+def unpack_key_value_tags(api: sly.Api, task_id, context, state, app_logger):
     src_project = api.project.get_info_by_id(PROJECT_ID)
     if src_project.type != str(sly.ProjectType.IMAGES):
         raise Exception("Project {!r} has type {!r}. App works only with type {!r}"
@@ -33,15 +53,14 @@ def unpack_tags(api: sly.Api, task_id, context, state, app_logger):
             find_tag = True
             continue
     if find_tag is False:
-        raise Exception("Project {!r} doesn't have tags with valid values".format(src_project.name))
+        raise Exception("Project {!r} doesn't have tags of types 'ONE_OFSTRING' or 'ANY_STRING' values".format(src_project.name))
 
     dst_project = api.project.create(WORKSPACE_ID, INPUT_PROJECT_NAME, description="Unpacked tags", change_name_if_conflict=True)
     sly.logger.info('Destination project is created.',
                     extra={'project_id': dst_project.id, 'project_name': INPUT_PROJECT_NAME})
 
     api.project.update_meta(dst_project.id, src_project_meta.to_json())
-    dst_project_meta_json = api.project.get_meta(dst_project.id)
-    dst_project_meta = sly.ProjectMeta.from_json(dst_project_meta_json)
+    dst_project_meta = src_project_meta
 
     for dataset in api.dataset.get_list(src_project.id):
         dst_dataset = api.dataset.create(dst_project.id, dataset.name, change_name_if_conflict=True)
@@ -51,44 +70,29 @@ def unpack_tags(api: sly.Api, task_id, context, state, app_logger):
             image_names = [image_info.name for image_info in batch]
 
             ann_infos = api.annotation.download_batch(dataset.id, image_ids)
-            anns = [sly.Annotation.from_json(ann_info.annotation, src_project_meta) for ann_info in ann_infos]
+            anns = [sly.Annotation.from_json(ann_info.annotation, dst_project_meta) for ann_info in ann_infos]
 
             unpacked_anns = []
             for ann in anns:
-                unpacked_img_tags = sly.TagCollection([])
-                unpacked_labels = []
-                for img_tag in ann.img_tags:
-                    if img_tag.name not in SELECTED_TAGS:
-                        continue
-                    unpacked_img_tag_meta = sly.TagMeta(f"{img_tag.name}_{img_tag.value}", sly.TagValueType.NONE)
-                    unpacked_img_tag = sly.Tag(unpacked_img_tag_meta)
-                    unpacked_img_tags = unpacked_img_tags.add(unpacked_img_tag)
-                    if unpacked_img_tag_meta not in dst_project_meta.tag_metas:
-                        dst_project_meta = dst_project_meta.add_tag_meta(unpacked_img_tag_meta)
-                        api.project.update_meta(dst_project.id, dst_project_meta.to_json())
-
-                for label in ann.labels:
-                    unpacked_lbl_tags = sly.TagCollection([])
-                    for lbl_tag in label.tags:
-                        if lbl_tag.name not in SELECTED_TAGS:
-                            continue
-                        unpacked_lbl_tag_meta = sly.TagMeta(f"{lbl_tag.name}_{lbl_tag.value}", sly.TagValueType.NONE)
-                        unpacked_lbl_tag = sly.Tag(unpacked_lbl_tag_meta)
-                        unpacked_lbl_tags = unpacked_lbl_tags.add(unpacked_lbl_tag)
-                        if KEEP_ANNS:
-                            unpacked_lbl_tags = unpacked_lbl_tags.add(lbl_tag)
-                        if unpacked_lbl_tag_meta not in dst_project_meta.tag_metas:
-                            dst_project_meta = dst_project_meta.add_tag_meta(unpacked_lbl_tag_meta)
-                            api.project.update_meta(dst_project.id, dst_project_meta.to_json())
-
-                    unpacked_label = label.clone(tags=unpacked_lbl_tags)
-                    unpacked_labels.append(unpacked_label)
-
-                unpacked_ann = ann.clone(labels=unpacked_labels, img_tags=unpacked_img_tags)
-                if KEEP_ANNS:
-                    unpacked_ann = unpacked_ann.add_tags(ann.img_tags)
+                image_tags = [tag for tag in ann.img_tags]
+                unpacked_image_tags = unpack_tags(api, image_tags, SELECTED_TAGS, dst_project.id)
+                if KEEP_TAGS == "keep":
+                    unpacked_ann = ann.add_tags(unpacked_image_tags)
+                    unpacked_labels = []
+                    for label in unpacked_ann.labels:
+                        unpacked_label_tags = unpack_tags(api, label.tags, SELECTED_TAGS, dst_project.id)
+                        unpacked_label = label.add_tags(unpacked_label_tags)
+                        unpacked_labels.append(unpacked_label)
+                    unpacked_image_tags = sly.TagCollection(unpacked_ann.img_tags)
+                    unpacked_ann = ann.clone(labels=unpacked_labels, img_tags=unpacked_image_tags)
                 else:
-                    unpacked_ann = ann.clone(labels=unpacked_labels, img_tags=unpacked_img_tags)
+                    unpacked_image_tags = sly.TagCollection(unpacked_image_tags)
+                    unpacked_labels = []
+                    for label in ann.labels:
+                        unpacked_label_tags = unpack_tags(api, label.tags, SELECTED_TAGS, dst_project.id)
+                        unpacked_label = label.clone(tags=sly.TagCollection(unpacked_label_tags))
+                        unpacked_labels.append(unpacked_label)
+                    unpacked_ann = ann.clone(labels=unpacked_labels, img_tags=unpacked_image_tags)
 
                 unpacked_anns.append(unpacked_ann)
 
@@ -105,7 +109,7 @@ def main():
         "TEAM_ID": TEAM_ID,
         "WORKSPACE_ID": WORKSPACE_ID
     })
-    my_app.run(initial_events=[{"command": "unpack_tags"}])
+    my_app.run(initial_events=[{"command": "unpack_key_value_tags"}])
 
 
 if __name__ == "__main__":
