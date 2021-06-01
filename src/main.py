@@ -85,7 +85,7 @@ def unpack_key_value_tags(api: sly.Api, task_id, context, state, app_logger):
                         unpacked_labels.append(unpacked_label)
                     unpacked_image_tags = sly.TagCollection(unpacked_ann.img_tags)
                     unpacked_ann = ann.clone(labels=unpacked_labels, img_tags=unpacked_image_tags)
-                else:
+                if KEEP_TAGS == "remove":
                     unpacked_image_tags = sly.TagCollection(unpacked_image_tags)
                     unpacked_labels = []
                     for label in ann.labels:

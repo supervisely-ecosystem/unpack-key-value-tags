@@ -1,11 +1,10 @@
 <div>
     <sly-field title="Select Tags that should be unpacked">
         <sly-select-tag :project-id="context.projectId" :tags.sync="state.tags"
-                        :options="{'multiple': true}"></sly-select-tag>
+                        :options="{'multiple': true, 'showLabel': false}"></sly-select-tag>
     </sly-field>
-    <sly-field title="Keep original tags / remove original tags"
-               description="Choose whether to keep tags from source project or not">
-        <el-select v-model="state.assignAs">
+    <sly-field title="Choose whether to keep or remove original tags for result project">
+        <el-select v-model="state.keepTags">
             <el-option key="keep" label="Keep original tags" value="keep"></el-option>
             <el-option key="remove" label="Remove original tags" value="remove"></el-option>
         </el-select>
@@ -15,14 +14,3 @@
         <el-input v-model="state.inputProjectName"></el-input>
     </sly-field>
 </div>
-
-
-<el-select v-model="state.selectors[row.name]"
-           :disabled="data.started === true || row.convertTo.length === 1">
-    <el-option
-            v-for="item in row.convertTo"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-    </el-option>
-</el-select>
