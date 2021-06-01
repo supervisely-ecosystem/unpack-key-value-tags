@@ -2,7 +2,8 @@
   "name": "Unpack key value tags",
   "type": "app",
   "categories": [
-    "Labeling"
+    "Transform",
+    "Tag"
   ],
   "description": "Rename \"Key:Value\" tags to key_value (fruit: lemon -> fruit_lemon)",
   "docker_image": "supervisely/base-py-sdk:6.1.80",
@@ -20,6 +21,6 @@
   "icon_background": "#FFFFFF",
   "context_menu": {
     "target": ["images_project"],
-    "context_category": "Labeling"
+    "context_category": "Transform"
   }
 }
