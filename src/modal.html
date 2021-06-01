@@ -3,7 +3,7 @@
         <sly-select-tag :project-id="context.projectId" :tags.sync="state.tags"
                         :options="{'multiple': true, 'showLabel': false}"></sly-select-tag>
     </sly-field>
-    <sly-field title="Choose whether to keep or remove original tags for result project">
+    <sly-field title="Choose whether to keep or remove original tags after unpacking">
         <el-select v-model="state.keepTags">
             <el-option key="keep" label="Keep original tags" value="keep"></el-option>
             <el-option key="remove" label="Remove original tags" value="remove"></el-option>

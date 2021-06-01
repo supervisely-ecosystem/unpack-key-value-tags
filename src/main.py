@@ -15,21 +15,23 @@ INPUT_PROJECT_NAME = str(os.environ['modal.state.inputProjectName'])
 
 api = sly.Api.from_env()
 
+global dst_project_meta
+
 
 def unpack_tags(api, project_tags, tags_to_unpack, dst_project_id):
+    global dst_project_meta
     unpacked_project_tags = []
     unpacked_project_tag_metas = []
-    dst_project_meta = sly.ProjectMeta.from_json(api.project.get_meta(dst_project_id))
     for tag in project_tags:
         if tag.name in tags_to_unpack:
             tag_name = f"{tag.name}_{tag.value}"
-            if dst_project_meta.tag_metas.get(tag_name) is None:
+            tag_meta = dst_project_meta.tag_metas.get(tag_name)
+            if tag_meta is None:
                 tag_meta = sly.TagMeta(tag_name, sly.TagValueType.NONE)
                 tag = sly.Tag(tag_meta)
                 dst_project_meta = dst_project_meta.add_tag_meta(tag_meta)
                 api.project.update_meta(dst_project_id, dst_project_meta.to_json())
             else:
-                tag_meta = dst_project_meta.tag_metas.get(tag_name)
                 tag = sly.Tag(tag_meta)
             unpacked_project_tags.append(tag)
             unpacked_project_tag_metas.append(tag_meta)
@@ -39,6 +41,7 @@ def unpack_tags(api, project_tags, tags_to_unpack, dst_project_id):
 @my_app.callback("unpack_key_value_tags")
 @sly.timeit
 def unpack_key_value_tags(api: sly.Api, task_id, context, state, app_logger):
+    global dst_project_meta
     src_project = api.project.get_info_by_id(PROJECT_ID)
     if src_project.type != str(sly.ProjectType.IMAGES):
         raise Exception("Project {!r} has type {!r}. App works only with type {!r}"
@@ -60,8 +63,7 @@ def unpack_key_value_tags(api: sly.Api, task_id, context, state, app_logger):
                     extra={'project_id': dst_project.id, 'project_name': INPUT_PROJECT_NAME})
 
     api.project.update_meta(dst_project.id, src_project_meta.to_json())
-    dst_project_meta = src_project_meta
-
+    dst_project_meta = sly.ProjectMeta.from_json(api.project.get_meta(dst_project.id))
     for dataset in api.dataset.get_list(src_project.id):
         dst_dataset = api.dataset.create(dst_project.id, dataset.name, change_name_if_conflict=True)
         images = api.image.get_list(dataset.id)
@@ -93,7 +95,6 @@ def unpack_key_value_tags(api: sly.Api, task_id, context, state, app_logger):
                         unpacked_label = label.clone(tags=sly.TagCollection(unpacked_label_tags))
                         unpacked_labels.append(unpacked_label)
                     unpacked_ann = ann.clone(labels=unpacked_labels, img_tags=unpacked_image_tags)
-
                 unpacked_anns.append(unpacked_ann)
 
             dst_images = api.image.upload_ids(dst_dataset.id, image_names, image_ids)
