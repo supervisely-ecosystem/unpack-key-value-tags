@@ -52,6 +52,6 @@ Go to `Context Menu` -> `Run App` -> `Transform` -> `Unpack key value tags`
 
 Watch howto video for more details:
 
-<a data-key="sly-embeded-video-link" href="https://youtu.be/z31-K7NAAbU" data-video-code="20pDcGWxOYo">
+<a data-key="sly-embeded-video-link" href="https://youtu.be/z31-K7NAAbU" data-video-code="z31-K7NAAbU">
     <img src="https://i.imgur.com/TMYoDpu.png" alt="SLY_EMBEDED_VIDEO_LINK"  style="max-width:500px;">
 </a>
