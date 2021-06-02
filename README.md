@@ -50,7 +50,7 @@ Go to `Context Menu` -> `Run App` -> `Transform` -> `Unpack key value tags`
 **Step 4:** Resulting project will be placed to your current Workspace with the chosen name
 
 
-Watch short video for more details:
+Watch howto video for more details:
 
 <a data-key="sly-embeded-video-link" href="https://youtu.be/z31-K7NAAbU" data-video-code="20pDcGWxOYo">
     <img src="https://i.imgur.com/TMYoDpu.png" alt="SLY_EMBEDED_VIDEO_LINK"  style="max-width:500px;">
