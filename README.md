@@ -47,4 +47,4 @@ Go to `Context Menu` -> `Run App` -> `Transform` -> `Unpack key value tags`
 
 <img src="https://i.imgur.com/ao6ck5z.png" width="400"/>
 
-### Note: Resulting project will be placed to your current Workspace with the chosen name
+**Step 4:** Resulting project will be placed to your current Workspace with the chosen name
