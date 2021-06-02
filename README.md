@@ -48,3 +48,10 @@ Go to `Context Menu` -> `Run App` -> `Transform` -> `Unpack key value tags`
 <img src="https://i.imgur.com/ao6ck5z.png" width="400"/>
 
 **Step 4:** Resulting project will be placed to your current Workspace with the chosen name
+
+
+Watch short video for more details:
+
+<a data-key="sly-embeded-video-link" href="https://youtu.be/z31-K7NAAbU" data-video-code="20pDcGWxOYo">
+    <img src="https://i.imgur.com/TMYoDpu.png" alt="SLY_EMBEDED_VIDEO_LINK"  style="max-width:500px;">
+</a>
