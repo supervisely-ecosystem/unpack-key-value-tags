@@ -1,7 +1,6 @@
 import os
 import json
 import supervisely_lib as sly
-from distutils.util import strtobool
 
 my_app = sly.AppService()
 
@@ -9,21 +8,18 @@ TEAM_ID = int(os.environ['context.teamId'])
 WORKSPACE_ID = int(os.environ['context.workspaceId'])
 PROJECT_ID = int(os.environ['modal.state.slyProjectId'])
 
-
 SELECTED_TAGS = json.loads(os.environ['modal.state.tags'])
-
 KEEP_TAGS = os.environ['modal.state.keepTags']
 INPUT_PROJECT_NAME = str(os.environ['modal.state.inputProjectName'])
 
 api = sly.Api.from_env()
-
 global dst_project_meta
 
 
-def unpack_tags(api, project_tags, tags_to_unpack, dst_project_id):
+def unpack_tags(api, ann_tags, tags_to_unpack, dst_project_id):
     global dst_project_meta
     unpacked_project_tags = []
-    for tag in project_tags:
+    for tag in ann_tags:
         if tag.name in tags_to_unpack:
             tag_name = f"{tag.name}_{tag.value}"
             tag_meta = dst_project_meta.tag_metas.get(tag_name)
@@ -46,31 +42,21 @@ def unpack_key_value_tags(api: sly.Api, task_id, context, state, app_logger):
     src_project_meta_json = api.project.get_meta(src_project.id)
     src_project_meta = sly.ProjectMeta.from_json(src_project_meta_json)
 
-    find_tag = False
-    for tag_meta in src_project_meta.tag_metas:
-        if tag_meta.value_type == sly.TagValueType.ONEOF_STRING or tag_meta.value_type == sly.TagValueType.ANY_STRING:
-            find_tag = True
-            break
-    if find_tag is False:
-        raise Exception("Project {!r} doesn't have tags of types 'ONE_OFSTRING' or 'ANY_STRING' values".format(src_project.name))
-
     dst_project = api.project.create(WORKSPACE_ID, INPUT_PROJECT_NAME, description="Unpacked tags", change_name_if_conflict=True)
     sly.logger.info('Destination project is created.',
                     extra={'project_id': dst_project.id, 'project_name': INPUT_PROJECT_NAME})
 
     api.project.update_meta(dst_project.id, src_project_meta.to_json())
     dst_project_meta = src_project_meta.clone()
+    progress = sly.Progress('Unpacking tags for images', src_project.images_count, app_logger)
     for dataset in api.dataset.get_list(src_project.id):
         dst_dataset = api.dataset.create(dst_project.id, dataset.name, change_name_if_conflict=True)
         images = api.image.get_list(dataset.id)
-        progress = sly.Progress('Unpacking tags for images', len(images), app_logger)
         for batch in sly.batched(images):
             image_ids = [image_info.id for image_info in batch]
             image_names = [image_info.name for image_info in batch]
-
             ann_infos = api.annotation.download_batch(dataset.id, image_ids)
             anns = [sly.Annotation.from_json(ann_info.annotation, dst_project_meta) for ann_info in ann_infos]
-
             unpacked_anns = []
             for ann in anns:
                 image_tags = [tag for tag in ann.img_tags]
