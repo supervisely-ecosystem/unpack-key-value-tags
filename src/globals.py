@@ -1,7 +1,7 @@
 import os
 import sys
 
-import supervisely_lib as sly
+import supervisely as sly
 from supervisely.app.v1.app_service import AppService
 
 app_root_directory = os.path.dirname(os.getcwd())

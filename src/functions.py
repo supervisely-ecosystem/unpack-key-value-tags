@@ -1,4 +1,4 @@
-import supervisely_lib as sly
+import supervisely as sly
 
 
 def unpack_tags(api, ann_tags, tags_to_unpack, dst_project_id, dst_project_meta):
