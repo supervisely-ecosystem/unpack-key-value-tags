@@ -16,3 +16,8 @@ def unpack_tags(api, ann_tags, tags_to_unpack, dst_project_id, dst_project_meta)
                 tag = sly.Tag(tag_meta)
             unpacked_project_tags.append(tag)
     return unpacked_project_tags, dst_project_meta
+
+def remove_original_tags_from_meta(src_project_meta: sly.ProjectMeta, dst_project_meta: sly.ProjectMeta):
+    src_tags_names = [tag.name for tag in src_project_meta.tag_metas]
+    dst_project_meta = dst_project_meta.delete_tag_metas(tag_names=src_tags_names)
+    return dst_project_meta

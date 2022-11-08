@@ -16,6 +16,7 @@ sly.logger.info(f'PYTHONPATH={os.environ.get("PYTHONPATH", "")}')
 # load_dotenv(os.path.join(app_root_directory, "unpack-key-value-tags", "debug.env"))
 
 my_app = AppService()
+api = sly.Api.from_env()
 
 TASK_ID = int(os.environ["TASK_ID"])
 TEAM_ID = int(os.environ["context.teamId"])
@@ -26,4 +27,4 @@ SELECTED_TAGS = [i.strip() for i in os.environ["modal.state.tags"][1:-1].replace
 KEEP_TAGS = os.environ["modal.state.keepTags"]
 INPUT_PROJECT_NAME = str(os.environ["modal.state.inputProjectName"])
 
-api = sly.Api.from_env()
+unpacked_tags_names = []

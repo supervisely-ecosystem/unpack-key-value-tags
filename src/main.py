@@ -13,7 +13,7 @@ def unpack_key_value_tags(api: sly.Api, task_id, context, state, app_logger):
 
     dst_project = api.project.create(
         g.WORKSPACE_ID,
-        src_project.name or g.INPUT_PROJECT_NAME,
+        g.INPUT_PROJECT_NAME or src_project.name,
         description="Unpacked tags",
         change_name_if_conflict=True,
     )
@@ -55,7 +55,7 @@ def unpack_key_value_tags(api: sly.Api, task_id, context, state, app_logger):
                             label.tags,
                             g.SELECTED_TAGS,
                             dst_project.id,
-                            dst_project_meta
+                            dst_project_meta,
                         )
                         unpacked_label = label.add_tags(unpacked_label_tags)
                         unpacked_labels.append(unpacked_label)
@@ -68,7 +68,11 @@ def unpack_key_value_tags(api: sly.Api, task_id, context, state, app_logger):
                     unpacked_labels = []
                     for label in ann.labels:
                         unpacked_label_tags, dst_project_meta = f.unpack_tags(
-                            api, label.tags, g.SELECTED_TAGS, dst_project.id
+                            api,
+                            label.tags,
+                            g.SELECTED_TAGS,
+                            dst_project.id,
+                            dst_project_meta,
                         )
                         unpacked_label = label.clone(
                             tags=sly.TagCollection(unpacked_label_tags)
@@ -84,6 +88,10 @@ def unpack_key_value_tags(api: sly.Api, task_id, context, state, app_logger):
             api.annotation.upload_anns(dst_image_ids, unpacked_anns)
             progress.iters_done_report(len(batch))
 
+    if g.KEEP_TAGS == "remove":
+        dst_project_meta = f.remove_original_tags_from_meta(src_project_meta, dst_project_meta)
+        api.project.update_meta(dst_project.id, dst_project_meta.to_json())
+
     api.task.set_output_project(task_id, dst_project.id, dst_project.name)
     g.my_app.stop()
 
@@ -93,7 +101,6 @@ def main():
         "Script arguments", extra={"TEAM_ID": g.TEAM_ID, "WORKSPACE_ID": g.WORKSPACE_ID}
     )
     g.my_app.run(initial_events=[{"command": "unpack_key_value_tags"}])
-
 
 if __name__ == "__main__":
     sly.main_wrapper("main", main)
