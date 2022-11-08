@@ -23,9 +23,9 @@ TEAM_ID = int(os.environ["context.teamId"])
 WORKSPACE_ID = int(os.environ["context.workspaceId"])
 PROJECT_ID = int(os.environ["modal.state.slyProjectId"])
 
-SELECTED_TAGS = [i.strip() for i in os.environ["modal.state.tags"][1:-1].replace('"',"").split(',')]
+SELECTED_TAGS = [i.strip() for i in os.environ["modal.state.tags"][1:-1].replace('"',"").replace("'", "").split(',')]
 
-sly.logger.info(msg=f"{SELECTED_TAGS}")
+sly.logger.info(msg=f"SELECTED TAGS: {SELECTED_TAGS}")
 
 KEEP_TAGS = os.environ["modal.state.keepTags"]
 INPUT_PROJECT_NAME = str(os.environ["modal.state.inputProjectName"])
