@@ -1,9 +1,4 @@
 <div>
-
-    <pre>
-        {{ JSON.stringify(state, undefined, 2) }}
-    </pre>
-
     <sly-field title="Select Tags that should be unpacked">
         <sly-select-tag :project-id="context.projectId" :tags.sync="state.tags"
                         :options="{'multiple': true, 'showLabel': false, 'availableValueTypes': ['any_string', 'oneof_string']}"></sly-select-tag>
