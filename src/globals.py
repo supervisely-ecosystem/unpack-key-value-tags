@@ -6,7 +6,7 @@ from supervisely.app.v1.app_service import AppService
 
 app_root_directory = os.path.dirname(os.getcwd())
 sys.path.append(app_root_directory)
-sys.path.append(os.path.join(app_root_directory, "unpack-key-value-tags", "src"))
+sys.path.append(os.path.join(app_root_directory, "src"))
 print(f"App root directory: {app_root_directory}")
 sly.logger.info(f'PYTHONPATH={os.environ.get("PYTHONPATH", "")}')
 
