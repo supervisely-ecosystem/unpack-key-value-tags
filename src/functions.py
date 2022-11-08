@@ -2,6 +2,7 @@ import supervisely as sly
 
 
 def unpack_tags(api, ann_tags, tags_to_unpack, dst_project_id, dst_project_meta):
+    sly.logger.info(msg=f"TAGS TO UNPACK{tags_to_unpack}")
     unpacked_project_tags = []
     for tag in ann_tags:
         if tag.name in tags_to_unpack:
