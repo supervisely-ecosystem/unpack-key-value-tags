@@ -13,7 +13,7 @@ def unpack_key_value_tags(api: sly.Api, task_id, context, state, app_logger):
 
     dst_project = api.project.create(
         g.WORKSPACE_ID,
-        g.INPUT_PROJECT_NAME,
+        src_project.name or g.INPUT_PROJECT_NAME,
         description="Unpacked tags",
         change_name_if_conflict=True,
     )
