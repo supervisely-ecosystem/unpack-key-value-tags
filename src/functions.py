@@ -2,7 +2,6 @@ import supervisely as sly
 
 
 def unpack_tags(api, ann_tags, tags_to_unpack, dst_project_id, dst_project_meta):
-    sly.logger.info(msg=f"TAGS TO UNPACK {tags_to_unpack}")
     unpacked_project_tags = []
     for tag in ann_tags:
         if tag.name in tags_to_unpack:
@@ -16,8 +15,6 @@ def unpack_tags(api, ann_tags, tags_to_unpack, dst_project_id, dst_project_meta)
             else:
                 tag = sly.Tag(tag_meta)
             unpacked_project_tags.append(tag)
-            
-    sly.logger.info(msg=f"{[tag.name for tag in unpacked_project_tags]}")
     return unpacked_project_tags, dst_project_meta
 
 def remove_original_tags_from_meta(src_project_meta: sly.ProjectMeta, dst_project_meta: sly.ProjectMeta):

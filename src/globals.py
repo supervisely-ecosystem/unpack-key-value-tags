@@ -24,8 +24,10 @@ WORKSPACE_ID = int(os.environ["context.workspaceId"])
 PROJECT_ID = int(os.environ["modal.state.slyProjectId"])
 
 SELECTED_TAGS = [i.strip() for i in os.environ["modal.state.tags"][1:-1].replace('"',"").replace("'", "").split(',')]
-
-sly.logger.info(msg=f"SELECTED TAGS: {SELECTED_TAGS}")
+if not SELECTED_TAGS:
+    message = "Please select at least 1 tag"
+    sly.logger.error(msg=message)
+    raise Exception(message)
 
 KEEP_TAGS = os.environ["modal.state.keepTags"]
 INPUT_PROJECT_NAME = str(os.environ["modal.state.inputProjectName"])
