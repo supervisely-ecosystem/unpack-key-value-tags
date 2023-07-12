@@ -35,7 +35,7 @@ Application supports only the following tag value types:
 
 Go to `Context Menu` -> `Run App` -> `Transform` -> `Unpack key value tags`
 
-<img src="https://i.imgur.com/8d37Ldg.png" width="600"/>
+<img src="media/htr2.png" width="600"/>
 
 **Step 3:**  Configure options in the modal window
 
@@ -44,7 +44,7 @@ Go to `Context Menu` -> `Run App` -> `Transform` -> `Unpack key value tags`
 3. Type name for the result project 
 4. Press `Run` button 
 
-<img src="https://i.imgur.com/ao6ck5z.png" width="400"/>
+<img src="media/htr3.png" width="400"/>
 
 **Step 4:** Resulting project will be placed to your current Workspace with the chosen name
 
@@ -52,5 +52,5 @@ Go to `Context Menu` -> `Run App` -> `Transform` -> `Unpack key value tags`
 Watch video guide for more details:
 
 <a data-key="sly-embeded-video-link" href="https://youtu.be/z31-K7NAAbU" data-video-code="z31-K7NAAbU">
-    <img src="https://i.imgur.com/TMYoDpu.png" alt="SLY_EMBEDED_VIDEO_LINK"  style="max-width:500px;">
+    <img src="media/htr4.png" alt="SLY_EMBEDED_VIDEO_LINK"  style="max-width:500px;">
 </a>
