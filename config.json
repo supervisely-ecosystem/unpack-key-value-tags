@@ -1,30 +1,30 @@
 {
-  "name": "Unpack key value tags",
-  "type": "app",
-  "categories": [
-    "images",
-    "annotation transformation",
-    "data operations"
-  ],
-  "description": "Rename \"Key:Value\" tags to key_value (fruit: lemon -> fruit_lemon)",
-  "docker_image": "supervisely/base-py-sdk:6.72.70",
-  "main_script": "src/main.py",
-  "modal_template": "src/modal.html",
-  "modal_template_state": {
-    "tags": [],
-    "keepTags": "keep",
-    "inputProjectName": ""
-  },
-  "task_location": "workspace_tasks",
-  "isolate": true,
-  "headless": true,
-  "icon": "https://i.imgur.com/0lNSt9M.png",
-  "icon_background": "#FFFFFF",
-  "context_menu": {
-    "target": [
-      "images_project"
+    "name": "Unpack key value tags",
+    "type": "app",
+    "categories": [
+        "images",
+        "annotation transformation",
+        "data operations"
     ],
-    "context_category": "Transform"
-  },
-  "poster": "https://user-images.githubusercontent.com/48245050/182631707-5d6a3068-e5fb-45fd-96d4-003d2af90492.png"
+    "description": "Rename \"Key:Value\" tags to key_value (fruit: lemon -> fruit_lemon)",
+    "docker_image": "supervisely/data-operations:0.0.3",
+    "main_script": "src/main.py",
+    "modal_template": "src/modal.html",
+    "modal_template_state": {
+        "tags": [],
+        "keepTags": "keep",
+        "inputProjectName": ""
+    },
+    "task_location": "workspace_tasks",
+    "isolate": true,
+    "headless": true,
+    "icon": "https://i.imgur.com/0lNSt9M.png",
+    "icon_background": "#FFFFFF",
+    "context_menu": {
+        "target": [
+            "images_project"
+        ],
+        "context_category": "Transform"
+    },
+    "poster": "https://user-images.githubusercontent.com/48245050/182631707-5d6a3068-e5fb-45fd-96d4-003d2af90492.png"
 }
