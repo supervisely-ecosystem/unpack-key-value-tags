@@ -29,7 +29,7 @@ Application supports only the following tag value types:
 
 ## How To Run
 
-**Step 1:** Add applicaton to your team from [Ecosystem](../../../../supervisely-ecosystem/unpack-key-value-tags) if it is not there.
+**Step 1:** Add applicaton to your team from [Ecosystem](https://ecosystem.supervisely.com/apps/unpack-key-value-tags) if it is not there.
 
 **Step 2:** Run application from context menu of project
 
