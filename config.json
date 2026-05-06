@@ -1,13 +1,14 @@
 {
     "name": "Unpack key value tags",
     "type": "app",
+    "instance_version": "6.15.60",
     "categories": [
         "images",
         "annotation transformation",
         "data operations"
     ],
     "description": "Rename \"Key:Value\" tags to key_value (fruit: lemon -> fruit_lemon)",
-    "docker_image": "supervisely/data-operations:0.0.5",
+    "docker_image": "supervisely/data-operations:6.73.564",
     "main_script": "src/main.py",
     "modal_template": "src/modal.html",
     "modal_template_state": {
